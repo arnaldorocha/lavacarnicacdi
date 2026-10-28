@@ -2,22 +2,107 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#c8f6e7">
 <title>Lavacarniça 3.0 — A Ascensão da Limpeza</title>
 <style>
 :root{--ink:#203047;--green:#21a783;--mint:#d8fff0;--gold:#ffc857;--panel:#ffffffed}
-*{box-sizing:border-box}body{margin:0;padding:16px;background:linear-gradient(135deg,#c8f6e7,#dbe8ff);font-family:system-ui,Segoe UI,Arial,sans-serif;color:var(--ink)}
-.app{max-width:1120px;margin:auto}header{text-align:center;margin:0 0 12px}h1{font-size:clamp(2rem,5vw,3.4rem);margin:0;letter-spacing:-2px}h1 span{color:#13896d}.sub{margin:2px 0 0;font-weight:650}
-.hud{display:grid;grid-template-columns:repeat(6,minmax(90px,1fr));gap:8px;margin-bottom:10px}.stat,.tools,.mission,.shop,.log{background:var(--panel);border:2px solid #fff;border-radius:14px;padding:10px 12px;box-shadow:0 5px 16px #36516b12}.stat small{display:block;font-size:.7rem;opacity:.68;font-weight:800}.stat b{font-size:1.05rem}
-.main{display:grid;grid-template-columns:minmax(0,1fr) 250px;gap:10px;align-items:start}.gamebox{position:relative;overflow:hidden;border:5px solid white;border-radius:18px;box-shadow:0 12px 30px #30465b24;background:#f3e6cf}canvas{display:block;width:100%;height:auto;touch-action:none}
-.side{display:grid;gap:10px}.side h3{margin:0 0 7px;font-size:1rem}.mission p{margin:4px 0;font-size:.9rem;line-height:1.4}.tools,.shop{display:grid;gap:7px}.tools button,.actions button,.panel button,.mobile button,.shop button{font:inherit;font-weight:800;border:0;border-radius:10px;padding:9px 10px;cursor:pointer;background:#e9f5ff;color:#203047;box-shadow:0 3px 0 #bfd5e7}.tools button.active{background:#c8ffdf;box-shadow:0 3px 0 #7dcaa0;outline:2px solid #21a783}.tools button:disabled,.shop button:disabled{opacity:.45;cursor:not-allowed}.actions{display:grid;gap:7px}.actions button.primary{background:var(--gold);box-shadow:0 3px 0 #dba333}.actions button.green,.shop button{background:#baf4d9;box-shadow:0 3px 0 #75caa4}
+*{box-sizing:border-box}
+html{min-height:100%;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{margin:0;padding:clamp(8px,2vw,16px);background:linear-gradient(135deg,#c8f6e7,#dbe8ff);font-family:system-ui,-apple-system,"Segoe UI",Arial,sans-serif;color:var(--ink);overscroll-behavior-y:contain}
+button{font:inherit;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.app{width:min(100%,1120px);margin:0 auto}
+header{text-align:center;margin:0 0 12px}
+h1{font-size:clamp(1.7rem,5vw,3.4rem);line-height:1.1;margin:0;letter-spacing:clamp(-2px,-.15vw,-.5px)}
+h1 span{color:#13896d}.sub{margin:5px 0 0;font-weight:650;line-height:1.4;font-size:clamp(.85rem,2vw,1rem)}
+.hud{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;margin-bottom:10px}
+.stat,.tools,.mission,.shop,.log{min-width:0;background:var(--panel);border:2px solid #fff;border-radius:14px;padding:10px 12px;box-shadow:0 5px 16px #36516b12}
+.stat small{display:block;font-size:.7rem;opacity:.68;font-weight:800}.stat b{font-size:clamp(.88rem,1.8vw,1.05rem);overflow-wrap:anywhere}
+.main{display:grid;grid-template-columns:minmax(0,1fr) 250px;gap:10px;align-items:start}
+.gamebox{position:relative;min-width:0;overflow:hidden;border:clamp(2px,.6vw,5px) solid white;border-radius:18px;box-shadow:0 12px 30px #30465b24;background:#f3e6cf}
+canvas{display:block;width:100%;height:auto;aspect-ratio:8/5;touch-action:none}
+.side{display:grid;gap:10px;min-width:0}.side h3{margin:0 0 7px;font-size:1rem}
+.mission p{margin:4px 0;font-size:.9rem;line-height:1.4;overflow-wrap:anywhere}
+.tools,.shop{display:grid;gap:7px}
+.tools button,.actions button,.panel button,.mobile button,.shop button{font-weight:800;border:0;border-radius:10px;padding:10px;min-height:42px;cursor:pointer;background:#e9f5ff;color:#203047;box-shadow:0 3px 0 #bfd5e7}
+.tools button{font-size:.86rem;text-align:left;line-height:1.25}
+.tools button.active{background:#c8ffdf;box-shadow:0 3px 0 #7dcaa0;outline:2px solid #21a783}
+.tools button:disabled,.shop button:disabled{opacity:.45;cursor:not-allowed}
+.actions{display:grid;gap:7px}.actions button.primary{background:var(--gold);box-shadow:0 3px 0 #dba333}.actions button.green,.shop button{background:#baf4d9;box-shadow:0 3px 0 #75caa4}
 .help{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.help span{background:#ffffffb8;border-radius:10px;padding:8px 11px;font-size:.86rem;font-weight:650}
-.overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#14263dcc;padding:14px;z-index:5}.panel{max-width:480px;background:#fff9eb;border-radius:20px;padding:22px;text-align:center;box-shadow:0 12px 30px #0003}.panel h2{margin:0 0 8px;font-size:1.65rem}.panel p{line-height:1.5}.panel button{background:#baf4d9;box-shadow:0 3px 0 #75caa4}
-.mobile{display:none;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:10px}.mobile button{background:#fff;touch-action:manipulation}.mobile button.clean{background:#baf4d9}.mobile button.attack{background:#ffd1c8}
-.toast{position:absolute;top:54px;left:50%;transform:translateX(-50%);background:#203047;color:white;padding:9px 14px;border-radius:30px;font-weight:800;opacity:0;pointer-events:none;transition:opacity .2s;white-space:nowrap;z-index:2}
-.toast.show{opacity:1}.bar{height:8px;background:#d8e2eb;border-radius:8px;overflow:hidden;margin:5px 0}.bar i{display:block;height:100%;background:#21a783;width:100%}.log{font-size:.82rem;min-height:52px}
-@media(max-width:850px){.main{grid-template-columns:1fr}.side{grid-template-columns:repeat(2,minmax(0,1fr))}.actions,.shop{grid-column:1/-1}.hud{grid-template-columns:repeat(3,1fr)}.mobile{display:grid}}
-@media(max-width:480px){body{padding:8px}.side{grid-template-columns:1fr}.hud{grid-template-columns:repeat(2,1fr)}.stat:last-child{grid-column:auto}.panel{padding:16px}.panel h2{font-size:1.35rem}}
+.overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#14263dcc;padding:clamp(8px,3vw,18px);z-index:5;overflow:auto}
+.panel{width:min(100%,480px);max-height:100%;overflow-y:auto;background:#fff9eb;border-radius:20px;padding:clamp(14px,3vw,22px);text-align:center;box-shadow:0 12px 30px #0003}
+.panel h2{margin:0 0 8px;font-size:clamp(1.2rem,4vw,1.65rem)}.panel p{line-height:1.5;font-size:clamp(.84rem,2.5vw,.98rem)}
+.panel button{background:#baf4d9;box-shadow:0 3px 0 #75caa4;width:100%;min-height:46px}
+.mobile{display:none;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px;user-select:none;-webkit-user-select:none}
+.mobile button{background:#fff;min-height:54px;font-size:1.15rem;box-shadow:0 3px 0 #bfd5e7}
+.mobile button.clean{background:#baf4d9}.mobile button.attack{background:#ffd1c8}
+.mobile button[data-key]{font-size:1.4rem;touch-action:none}
+.toast{position:absolute;top:12px;left:50%;transform:translateX(-50%);max-width:calc(100% - 20px);background:#203047;color:white;padding:9px 14px;border-radius:30px;font-weight:800;opacity:0;pointer-events:none;transition:opacity .2s;white-space:normal;text-align:center;z-index:2;font-size:clamp(.75rem,2vw,.9rem)}
+.toast.show{opacity:1}.bar{height:8px;background:#d8e2eb;border-radius:8px;overflow:hidden;margin:5px 0}.bar i{display:block;height:100%;background:#21a783;width:100%}.log{font-size:.82rem;min-height:52px;overflow-wrap:anywhere}
+@media(max-width:900px){
+ .main{grid-template-columns:minmax(0,1fr)}
+ .side{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .actions,.shop,.log{grid-column:1/-1}
+ .hud{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .mobile{display:grid}
+ .help span{flex:1 1 220px}
+}
+@media(max-width:560px){
+ body{padding:8px}
+ header{margin-bottom:9px}
+ .sub{max-width:42rem;margin:5px auto 0}
+ .hud{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+ .stat{padding:8px;border-radius:11px}
+ .stat small{font-size:.62rem;letter-spacing:-.1px}
+ .stat b{font-size:.92rem}
+ .main{gap:8px}
+ .gamebox{border-radius:13px}
+ .side{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+ .mission,.tools,.shop,.log{padding:10px;border-radius:12px}
+ .mission p{font-size:.82rem}
+ .tools button,.shop button,.actions button{font-size:.8rem;padding:9px 8px;min-height:44px}
+ .tools h3,.shop h3,.mission h3{font-size:.92rem}
+ .actions{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+ .actions #next{grid-column:1/-1}
+ .mobile{gap:7px;margin-top:8px}
+ .mobile button{min-height:52px;padding:8px 4px}
+ .help{gap:6px;margin-top:8px}
+ .help span{flex:1 1 100%;font-size:.8rem;padding:7px 9px}
+}
+@media(max-width:360px){
+ body{padding:5px}
+ h1{font-size:1.55rem}
+ .hud{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .stat small{font-size:.65rem}
+ .side{grid-template-columns:minmax(0,1fr)}
+ .actions,.shop,.log{grid-column:auto}
+ .actions{grid-template-columns:1fr 1fr}
+ .mobile button{font-size:1rem;min-height:48px}
+ .panel{border-radius:14px}
+}
+@media(max-height:520px) and (orientation:landscape){
+ body{padding:5px}
+ header{margin-bottom:6px}
+ header h1{font-size:1.55rem}
+ .sub{font-size:.75rem}
+ .hud{grid-template-columns:repeat(6,minmax(0,1fr));gap:5px;margin-bottom:6px}
+ .stat{padding:5px 7px}
+ .stat small{font-size:.58rem}
+ .main{grid-template-columns:minmax(0,1fr) 190px;gap:7px}
+ .side{grid-template-columns:1fr;gap:6px}
+ .gamebox{max-height:calc(100dvh - 145px)}
+ canvas{max-height:calc(100dvh - 155px);width:100%;object-fit:contain}
+ .mobile{position:fixed;right:8px;bottom:8px;width:180px;z-index:6;margin:0;gap:4px}
+ .mobile button{min-height:38px;padding:4px;font-size:.9rem}
+ .help{display:none}
+ .mission,.tools,.shop,.log{padding:7px}
+ .tools button,.shop button,.actions button{min-height:34px;padding:6px;font-size:.75rem}
+ .overlay{position:fixed}
+ .panel{max-width:400px;padding:10px 14px}
+ .panel p{margin:6px 0;font-size:.8rem}
+}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
 </style>
 </head>
 <body><div class="app">
@@ -31,7 +116,7 @@
  <div class="stat"><small>⏱️ TEMPO</small><b id="time">90s</b></div>
 </div>
 <div class="main">
- <div class="gamebox"><canvas id="game" width="800" height="500"></canvas><div class="toast" id="toast"></div>
+ <div class="gamebox"><canvas id="game" width="800" height="500" aria-label="Área do jogo Lavacarniça"></canvas><div class="toast" id="toast" role="status" aria-live="polite"></div>
  <div class="overlay" id="overlay"><div class="panel"><h2 id="panelTitle">🚐 A empresa está aberta!</h2><p id="panelText">Você começa com R$ 150. Limpe as sujeiras para receber contratos e invista em melhorias. Cuidado: cocos monstros vão perseguir você! Fuja até evoluir e comprar o Super Produto.</p><p><b>Controles:</b> WASD/setas para andar; ESPAÇO para limpar ou atacar com o Super Produto. No celular, use os botões abaixo.</p><button id="start">Começar o serviço!</button></div></div></div>
  <aside class="side">
   <div class="mission"><h3>📋 Ordem de serviço</h3><p id="client">Cliente: Dona Zilda</p><p id="house">Casa simples</p><p id="goal">Limpe todas as sujeiras!</p><p id="pay">Pagamento: R$ 100</p><p id="enemyInfo">👾 Inimigos: 1</p></div>
@@ -51,10 +136,10 @@
   <div class="log" id="log">📣 Dica: limpe perto dos cocos e fique longe dos monstros!</div>
  </aside>
 </div>
-<div class="mobile">
- <span></span><button data-key="ArrowUp">⬆️</button><button data-action="clean" class="clean">🧽 LIMPAR</button>
- <button data-key="ArrowLeft">⬅️</button><button data-key="ArrowDown">⬇️</button><button data-key="ArrowRight">➡️</button>
- <span></span><button data-action="attack" class="attack">☣️ ATACAR</button><span></span>
+<div class="mobile" aria-label="Controles de toque">
+ <span></span><button type="button" data-key="ArrowUp" aria-label="Mover para cima">⬆️</button><button type="button" data-action="clean" class="clean">🧽 LIMPAR</button>
+ <button type="button" data-key="ArrowLeft" aria-label="Mover para esquerda">⬅️</button><button type="button" data-key="ArrowDown" aria-label="Mover para baixo">⬇️</button><button type="button" data-key="ArrowRight" aria-label="Mover para direita">➡️</button>
+ <span></span><button type="button" data-action="attack" class="attack">☣️ ATACAR</button><span></span>
 </div>
 <div class="help"><span>🧽 Aproxime-se e aperte ESPAÇO para limpar</span><span>👾 Fuja dos cocos monstros até poder enfrentá-los</span><span>☣️ Super Produto: compre após reputação 25 e velocidade nível 2</span><span>💰 Termine contratos para ganhar dinheiro</span></div>
 </div>
@@ -76,8 +161,10 @@ let level=0,money=150,rep=0,upgrade=0,selected=0,time=90,playing=false,won=false
 let speedLevel=0,healthLevel=0,superProduct=false,attackCooldown=0,cleanCooldown=0;
 let player={x:400,y:260,r:16,speed:3.1,hp:100,maxHp:100,invuln:0},stains=[],enemies=[],keys={};
 const positions=[[110,110],[250,100],[530,100],[690,155],[155,340],[340,390],[545,330],[700,400],[430,170],[250,260],[620,250],[90,250],[460,420],[330,150],[720,300]];
+let lastHud=0;
 function say(t){$('toast').textContent=t;$('toast').classList.add('show');$('log').textContent='📣 '+t;clearTimeout(say.t);say.t=setTimeout(()=>$('toast').classList.remove('show'),1500)}
-function hud(){
+function hud(force=false){
+ const now=performance.now();if(!force&&now-lastHud<120)return;lastHud=now;
  $('money').textContent='R$ '+money;$('rep').textContent=rep;$('level').textContent=(level+1)+' / '+levels.length;
  $('remaining').textContent=stains.filter(s=>s.alive).length;$('time').textContent=Math.max(0,Math.ceil(time))+'s';
  $('hp').textContent=Math.ceil(player.hp)+' / '+player.maxHp;$('hpbar').style.width=(player.hp/player.maxHp*100)+'%';
@@ -101,7 +188,7 @@ function resetLevel(){
  for(let i=0;i<l.count;i++){let p=positions[i%positions.length];stains.push({x:p[0],y:p[1],alive:true,phase:i*1.2});}
  for(let i=0;i<l.enemies;i++){let p=positions[(i*3+2)%positions.length];enemies.push({x:p[0],y:p[1],r:19,hp:1+Math.floor(level/2),maxHp:1+Math.floor(level/2),speed:0.65+level*.19,phase:i*2,attack:0});}
  player={x:400,y:260,r:16,speed:3.1+speedLevel*.45+upgrade*.2,hp:Math.min(player.maxHp,player.hp),maxHp:player.maxHp,invuln:0};
- time=l.time;won=false;selected=0;hud();draw();
+ time=l.time;won=false;selected=0;hud(true);draw();
 }
 function restart(){level=0;money=150;rep=0;upgrade=0;speedLevel=0;healthLevel=0;superProduct=false;player={x:400,y:260,r:16,speed:3.1,hp:100,maxHp:100,invuln:0};resetLevel();$('next').style.display='none';}
 function rr(a,b,w,h,r,col){x.fillStyle=col;x.beginPath();x.roundRect(a,b,w,h,r);x.fill()}
@@ -115,23 +202,30 @@ function enemyDraw(e){if(e.hp<=0)return;x.save();x.translate(e.x,e.y+Math.sin(ti
 function avatar(){x.save();x.translate(player.x,player.y);if(player.invuln>0&&Math.floor(tick/80)%2===0)x.globalAlpha=.45;x.fillStyle='#0002';x.beginPath();x.ellipse(0,16,17,7,0,0,7);x.fill();x.strokeStyle='#304e68';x.lineWidth=6;x.lineCap='round';x.beginPath();x.moveTo(-6,10);x.lineTo(-8,20);x.moveTo(6,10);x.lineTo(8,20);x.stroke();rr(-14,-9,28,25,7,'#269b82');x.fillStyle='#f0bd91';x.beginPath();x.arc(0,-17,13,0,7);x.fill();x.fillStyle='#4a332b';x.beginPath();x.arc(0,-21,13,Math.PI,Math.PI*2);x.fill();x.fillStyle='#263344';x.beginPath();x.arc(-4,-17,1.5,0,7);x.arc(4,-17,1.5,0,7);x.fill();x.fillStyle='#d9f7ef';x.fillRect(-7,-13,14,5);rr(12,-4,10,16,3,superProduct?'#d9ff3f':products[selected].color);x.fillStyle='white';x.fillRect(14,-8,5,5);x.restore()}
 function draw(){room();stains.forEach(s=>s.alive&&stain(s));enemies.forEach(enemyDraw);avatar();let near=stains.find(s=>s.alive&&Math.hypot(s.x-player.x,s.y-player.y)<51);if(near&&playing){x.fillStyle='#203047';x.font='bold 13px system-ui';x.textAlign='center';x.fillText('ESPAÇO = LIMPAR',player.x,player.y-37);x.textAlign='left'}if(superProduct&&playing){x.strokeStyle='#d0ff39';x.lineWidth=2;x.beginPath();x.arc(player.x,player.y,48,0,Math.PI*2);x.stroke()}if(flash>0){x.fillStyle='rgba(255,255,255,.3)';x.fillRect(0,0,800,500);flash--}}
 function move(dt){let dx=0,dy=0;if(keys.ArrowLeft||keys.a||keys.A)dx--;if(keys.ArrowRight||keys.d||keys.D)dx++;if(keys.ArrowUp||keys.w||keys.W)dy--;if(keys.ArrowDown||keys.s||keys.S)dy++;if(dx&&dy){dx*=.707;dy*=.707}player.x=Math.max(28,Math.min(772,player.x+dx*player.speed*dt));player.y=Math.max(60,Math.min(472,player.y+dy*player.speed*dt))}
-function clean(){if(!playing||cleanCooldown>0)return;cleanCooldown=10;let s=stains.find(s=>s.alive&&Math.hypot(s.x-player.x,s.y-player.y)<53);if(!s){say('Chegue mais perto da sujeira!');return}let p=products[selected];if(money<p.cost){say('Dinheiro insuficiente! Escolha um produto mais barato.');return}money-=p.cost;s.alive=false;rep+=Math.max(1,2+p.bonus);flash=8;hud();say('Sujeira removida! −R$ '+p.cost);if(stains.every(s=>!s.alive))finish(true)}
-function attack(){if(!playing||attackCooldown>0)return;if(!superProduct){say('Você ainda não tem o Super Produto! Fuja dos monstros e evolua.');return}attackCooldown=24;let e=enemies.find(e=>e.hp>0&&Math.hypot(e.x-player.x,e.y-player.y)<75);if(!e){say('Chegue a menos de 75 pixels do monstro!');return}e.hp--;flash=10;if(e.hp<=0){money+=35+level*10;rep+=5;say('Monstro derrotado! Bônus de R$ '+(35+level*10));}else say('Monstro atingido! Acerte de novo!');hud()}
-function finish(success){playing=false;won=success;$('overlay').style.display='flex';$('next').style.display=success&&level<levels.length-1?'block':'none';if(success){let earned=levels[level].pay+upgrade*25;money+=earned;rep+=10+level*5;player.hp=Math.min(player.maxHp,player.hp+20);hud();$('panelTitle').textContent=level===levels.length-1?'🏆 Lenda da Lavacarniça!':'💵 Serviço concluído!';$('panelText').textContent=`Contrato concluído! Você recebeu R$ ${earned}, ganhou reputação e recuperou 20 pontos de vida. Saldo: R$ ${money}. ${level===levels.length-1?'Você dominou a cidade!':'Invista na loja para ficar mais rápido e desbloquear o Super Produto.'}`;$('start').textContent=level===levels.length-1?'Jogar de novo':'Continuar';}else{$('panelTitle').textContent=player.hp<=0?'👾 Os cocos monstros venceram!':'⏰ O tempo acabou!';$('panelText').textContent=`Ainda restam ${stains.filter(s=>s.alive).length} sujeiras. Você pode tentar de novo. Use as melhorias da loja e evite encostar nos monstros.`;$('start').textContent='Tentar novamente';}}
+function clean(){if(!playing||cleanCooldown>0)return;cleanCooldown=10;let s=stains.find(s=>s.alive&&Math.hypot(s.x-player.x,s.y-player.y)<53);if(!s){say('Chegue mais perto da sujeira!');return}let p=products[selected];if(money<p.cost){say('Dinheiro insuficiente! Escolha um produto mais barato.');return}money-=p.cost;s.alive=false;rep+=Math.max(1,2+p.bonus);flash=8;hud(true);say('Sujeira removida! −R$ '+p.cost);if(stains.every(s=>!s.alive))finish(true)}
+function attack(){if(!playing||attackCooldown>0)return;if(!superProduct){say('Você ainda não tem o Super Produto! Fuja dos monstros e evolua.');return}attackCooldown=24;let e=enemies.find(e=>e.hp>0&&Math.hypot(e.x-player.x,e.y-player.y)<75);if(!e){say('Chegue a menos de 75 pixels do monstro!');return}e.hp--;flash=10;if(e.hp<=0){money+=35+level*10;rep+=5;say('Monstro derrotado! Bônus de R$ '+(35+level*10));}else say('Monstro atingido! Acerte de novo!');hud(true)}
+function finish(success){playing=false;won=success;$('overlay').style.display='flex';$('next').style.display=success&&level<levels.length-1?'block':'none';if(success){let earned=levels[level].pay+upgrade*25;money+=earned;rep+=10+level*5;player.hp=Math.min(player.maxHp,player.hp+20);hud(true);$('panelTitle').textContent=level===levels.length-1?'🏆 Lenda da Lavacarniça!':'💵 Serviço concluído!';$('panelText').textContent=`Contrato concluído! Você recebeu R$ ${earned}, ganhou reputação e recuperou 20 pontos de vida. Saldo: R$ ${money}. ${level===levels.length-1?'Você dominou a cidade!':'Invista na loja para ficar mais rápido e desbloquear o Super Produto.'}`;$('start').textContent=level===levels.length-1?'Jogar de novo':'Continuar';}else{$('panelTitle').textContent=player.hp<=0?'👾 Os cocos monstros venceram!':'⏰ O tempo acabou!';$('panelText').textContent=`Ainda restam ${stains.filter(s=>s.alive).length} sujeiras. Você pode tentar de novo. Use as melhorias da loja e evite encostar nos monstros.`;$('start').textContent='Tentar novamente';}}
 function loop(now){let dt=Math.min(2,(now-last)/16.67||1);last=now;tick=now;if(playing){move(dt);time-=dt/60;attackCooldown=Math.max(0,attackCooldown-dt);cleanCooldown=Math.max(0,cleanCooldown-dt);player.invuln=Math.max(0,player.invuln-dt);
- enemies.forEach(e=>{if(e.hp<=0)return;let dx=player.x-e.x,dy=player.y-e.y,d=Math.hypot(dx,dy)||1;e.x+=dx/d*e.speed*dt;e.y+=dy/d*e.speed*dt;if(d<player.r+e.r&&player.invuln<=0){player.hp-=12;player.invuln=48;say('O monstro te acertou! −12 de vida');if(player.hp<=0){player.hp=0;hud();finish(false)}}});
- if(time<=0&&playing){time=0;hud();finish(false)}else hud()}draw();requestAnimationFrame(loop)}
-document.addEventListener('keydown',e=>{if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '].includes(e.key))e.preventDefault();keys[e.key]=true;if(e.code==='Space'||e.key===' '){if(superProduct)attack();else clean()}if('123'.includes(e.key)){selected=+e.key-1;hud()}});
+ enemies.forEach(e=>{if(e.hp<=0)return;let dx=player.x-e.x,dy=player.y-e.y,d=Math.hypot(dx,dy)||1;e.x+=dx/d*e.speed*dt;e.y+=dy/d*e.speed*dt;if(d<player.r+e.r&&player.invuln<=0){player.hp-=12;player.invuln=48;say('O monstro te acertou! −12 de vida');if(player.hp<=0){player.hp=0;hud(true);finish(false)}}});
+ if(time<=0&&playing){time=0;hud(true);finish(false)}else hud()}draw();requestAnimationFrame(loop)}
+document.addEventListener('keydown',e=>{if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '].includes(e.key))e.preventDefault();keys[e.key]=true;if(e.code==='Space'||e.key===' '){if(superProduct)attack();else clean()}if('123'.includes(e.key)){selected=+e.key-1;hud(true)}});
 document.addEventListener('keyup',e=>keys[e.key]=false);
-document.querySelectorAll('[data-product]').forEach(b=>b.addEventListener('click',()=>{selected=+b.dataset.product;hud()}));
-document.querySelectorAll('[data-key]').forEach(b=>{let k=b.dataset.key;let down=e=>{e.preventDefault();keys[k]=true},up=e=>{e.preventDefault();keys[k]=false};b.addEventListener('pointerdown',down);b.addEventListener('pointerup',up);b.addEventListener('pointerleave',up);b.addEventListener('pointercancel',up)});
+window.addEventListener('blur',()=>{keys={}});
+document.addEventListener('visibilitychange',()=>{if(document.hidden)keys={}});
+document.querySelectorAll('[data-product]').forEach(b=>b.addEventListener('click',()=>{selected=+b.dataset.product;hud(true)}));
+document.querySelectorAll('[data-key]').forEach(b=>{
+ const k=b.dataset.key;
+ const down=e=>{e.preventDefault();keys[k]=true;try{b.setPointerCapture(e.pointerId)}catch(_){}};
+ const up=e=>{e.preventDefault();keys[k]=false};
+ b.addEventListener('pointerdown',down);b.addEventListener('pointerup',up);b.addEventListener('pointercancel',up);b.addEventListener('lostpointercapture',up);b.addEventListener('contextmenu',e=>e.preventDefault());
+});
 document.querySelector('[data-action="clean"]').addEventListener('click',clean);document.querySelector('[data-action="attack"]').addEventListener('click',attack);
-$('start').addEventListener('click',()=>{if(won){if(level===levels.length-1){restart()}else{level++;resetLevel()}}else if(time<=0||player.hp<=0||stains.every(s=>!s.alive)){resetLevel()}playing=true;$('overlay').style.display='none';$('next').style.display='none';hud()});
+$('start').addEventListener('click',()=>{if(won){if(level===levels.length-1){restart()}else{level++;resetLevel()}}else if(time<=0||player.hp<=0||stains.every(s=>!s.alive)){resetLevel()}playing=true;$('overlay').style.display='none';$('next').style.display='none';hud(true)});
 $('next').addEventListener('click',()=>{level++;resetLevel();playing=true;$('overlay').style.display='none';$('next').style.display='none'});
-$('upgrade').addEventListener('click',()=>{let cost=100+upgrade*100;if(upgrade<3&&money>=cost){money-=cost;upgrade++;player.speed=3.1+speedLevel*.45+upgrade*.2;hud();say('Equipamento melhorado!')}else say('Junte mais dinheiro para melhorar!')});
-$('speedBuy').addEventListener('click',()=>{let cost=100+speedLevel*100;if(speedLevel<3&&money>=cost){money-=cost;speedLevel++;player.speed=3.1+speedLevel*.45+upgrade*.2;hud();say('Velocidade aumentada!')}});
-$('healthBuy').addEventListener('click',()=>{let cost=120+healthLevel*100;if(healthLevel<3&&money>=cost){money-=cost;healthLevel++;player.maxHp+=20;player.hp=player.maxHp;hud();say('Vida máxima aumentada!')}});
-$('superBuy').addEventListener('click',()=>{if(!superProduct&&money>=350&&rep>=25&&speedLevel>=2){money-=350;superProduct=true;hud();say('SUPER PRODUTO desbloqueado! Agora derrote os monstros!')}else say('Requisitos: R$ 350, reputação 25 e velocidade nível 2.')});
+$('upgrade').addEventListener('click',()=>{let cost=100+upgrade*100;if(upgrade<3&&money>=cost){money-=cost;upgrade++;player.speed=3.1+speedLevel*.45+upgrade*.2;hud(true);say('Equipamento melhorado!')}else say('Junte mais dinheiro para melhorar!')});
+$('speedBuy').addEventListener('click',()=>{let cost=100+speedLevel*100;if(speedLevel<3&&money>=cost){money-=cost;speedLevel++;player.speed=3.1+speedLevel*.45+upgrade*.2;hud(true);say('Velocidade aumentada!')}});
+$('healthBuy').addEventListener('click',()=>{let cost=120+healthLevel*100;if(healthLevel<3&&money>=cost){money-=cost;healthLevel++;player.maxHp+=20;player.hp=player.maxHp;hud(true);say('Vida máxima aumentada!')}});
+$('superBuy').addEventListener('click',()=>{if(!superProduct&&money>=350&&rep>=25&&speedLevel>=2){money-=350;superProduct=true;hud(true);say('SUPER PRODUTO desbloqueado! Agora derrote os monstros!')}else say('Requisitos: R$ 350, reputação 25 e velocidade nível 2.')});
 $('restart').addEventListener('click',()=>{restart();playing=false;$('overlay').style.display='flex';$('panelTitle').textContent='🚐 Vamos recomeçar!';$('panelText').textContent='Você começa com R$ 150. Limpe, ganhe contratos, evolua e fuja dos cocos monstros!';$('start').textContent='Começar o serviço!'});
 restart();requestAnimationFrame(loop);
 })();
