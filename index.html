@@ -2,231 +2,1480 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#c8f6e7">
 <title>Lavacarniça 3.0 — A Ascensão da Limpeza</title>
+
 <style>
-:root{--ink:#203047;--green:#21a783;--mint:#d8fff0;--gold:#ffc857;--panel:#ffffffed}
-*{box-sizing:border-box}
-html{min-height:100%;-webkit-text-size-adjust:100%;text-size-adjust:100%}
-body{margin:0;padding:clamp(8px,2vw,16px);background:linear-gradient(135deg,#c8f6e7,#dbe8ff);font-family:system-ui,-apple-system,"Segoe UI",Arial,sans-serif;color:var(--ink);overscroll-behavior-y:contain}
-button{font:inherit;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
-.app{width:min(100%,1120px);margin:0 auto}
-header{text-align:center;margin:0 0 12px}
-h1{font-size:clamp(1.7rem,5vw,3.4rem);line-height:1.1;margin:0;letter-spacing:clamp(-2px,-.15vw,-.5px)}
-h1 span{color:#13896d}.sub{margin:5px 0 0;font-weight:650;line-height:1.4;font-size:clamp(.85rem,2vw,1rem)}
-.hud{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;margin-bottom:10px}
-.stat,.tools,.mission,.shop,.log{min-width:0;background:var(--panel);border:2px solid #fff;border-radius:14px;padding:10px 12px;box-shadow:0 5px 16px #36516b12}
-.stat small{display:block;font-size:.7rem;opacity:.68;font-weight:800}.stat b{font-size:clamp(.88rem,1.8vw,1.05rem);overflow-wrap:anywhere}
-.main{display:grid;grid-template-columns:minmax(0,1fr) 250px;gap:10px;align-items:start}
-.gamebox{position:relative;min-width:0;overflow:hidden;border:clamp(2px,.6vw,5px) solid white;border-radius:18px;box-shadow:0 12px 30px #30465b24;background:#f3e6cf}
-canvas{display:block;width:100%;height:auto;aspect-ratio:8/5;touch-action:none}
-.side{display:grid;gap:10px;min-width:0}.side h3{margin:0 0 7px;font-size:1rem}
-.mission p{margin:4px 0;font-size:.9rem;line-height:1.4;overflow-wrap:anywhere}
-.tools,.shop{display:grid;gap:7px}
-.tools button,.actions button,.panel button,.mobile button,.shop button{font-weight:800;border:0;border-radius:10px;padding:10px;min-height:42px;cursor:pointer;background:#e9f5ff;color:#203047;box-shadow:0 3px 0 #bfd5e7}
-.tools button{font-size:.86rem;text-align:left;line-height:1.25}
-.tools button.active{background:#c8ffdf;box-shadow:0 3px 0 #7dcaa0;outline:2px solid #21a783}
-.tools button:disabled,.shop button:disabled{opacity:.45;cursor:not-allowed}
-.actions{display:grid;gap:7px}.actions button.primary{background:var(--gold);box-shadow:0 3px 0 #dba333}.actions button.green,.shop button{background:#baf4d9;box-shadow:0 3px 0 #75caa4}
-.help{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.help span{background:#ffffffb8;border-radius:10px;padding:8px 11px;font-size:.86rem;font-weight:650}
-.overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#14263dcc;padding:clamp(8px,3vw,18px);z-index:5;overflow:auto}
-.panel{width:min(100%,480px);max-height:100%;overflow-y:auto;background:#fff9eb;border-radius:20px;padding:clamp(14px,3vw,22px);text-align:center;box-shadow:0 12px 30px #0003}
-.panel h2{margin:0 0 8px;font-size:clamp(1.2rem,4vw,1.65rem)}.panel p{line-height:1.5;font-size:clamp(.84rem,2.5vw,.98rem)}
-.panel button{background:#baf4d9;box-shadow:0 3px 0 #75caa4;width:100%;min-height:46px}
-.mobile{display:none;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px;user-select:none;-webkit-user-select:none}
-.mobile button{background:#fff;min-height:54px;font-size:1.15rem;box-shadow:0 3px 0 #bfd5e7}
-.mobile button.clean{background:#baf4d9}.mobile button.attack{background:#ffd1c8}
-.mobile button[data-key]{font-size:1.4rem;touch-action:none}
-.toast{position:absolute;top:12px;left:50%;transform:translateX(-50%);max-width:calc(100% - 20px);background:#203047;color:white;padding:9px 14px;border-radius:30px;font-weight:800;opacity:0;pointer-events:none;transition:opacity .2s;white-space:normal;text-align:center;z-index:2;font-size:clamp(.75rem,2vw,.9rem)}
-.toast.show{opacity:1}.bar{height:8px;background:#d8e2eb;border-radius:8px;overflow:hidden;margin:5px 0}.bar i{display:block;height:100%;background:#21a783;width:100%}.log{font-size:.82rem;min-height:52px;overflow-wrap:anywhere}
-@media(max-width:900px){
- .main{grid-template-columns:minmax(0,1fr)}
- .side{grid-template-columns:repeat(2,minmax(0,1fr))}
- .actions,.shop,.log{grid-column:1/-1}
- .hud{grid-template-columns:repeat(3,minmax(0,1fr))}
- .mobile{display:grid}
- .help span{flex:1 1 220px}
+:root {
+  --ink: #203047;
+  --green: #21a783;
+  --mint: #d8fff0;
+  --gold: #ffc857;
+  --panel: #ffffffed;
 }
-@media(max-width:560px){
- body{padding:8px}
- header{margin-bottom:9px}
- .sub{max-width:42rem;margin:5px auto 0}
- .hud{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
- .stat{padding:8px;border-radius:11px}
- .stat small{font-size:.62rem;letter-spacing:-.1px}
- .stat b{font-size:.92rem}
- .main{gap:8px}
- .gamebox{border-radius:13px}
- .side{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
- .mission,.tools,.shop,.log{padding:10px;border-radius:12px}
- .mission p{font-size:.82rem}
- .tools button,.shop button,.actions button{font-size:.8rem;padding:9px 8px;min-height:44px}
- .tools h3,.shop h3,.mission h3{font-size:.92rem}
- .actions{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
- .actions #next{grid-column:1/-1}
- .mobile{gap:7px;margin-top:8px}
- .mobile button{min-height:52px;padding:8px 4px}
- .help{gap:6px;margin-top:8px}
- .help span{flex:1 1 100%;font-size:.8rem;padding:7px 9px}
+
+* {
+  box-sizing: border-box;
 }
-@media(max-width:360px){
- body{padding:5px}
- h1{font-size:1.55rem}
- .hud{grid-template-columns:repeat(2,minmax(0,1fr))}
- .stat small{font-size:.65rem}
- .side{grid-template-columns:minmax(0,1fr)}
- .actions,.shop,.log{grid-column:auto}
- .actions{grid-template-columns:1fr 1fr}
- .mobile button{font-size:1rem;min-height:48px}
- .panel{border-radius:14px}
+
+html {
+  min-height: 100%;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
-@media(max-height:520px) and (orientation:landscape){
- body{padding:5px}
- header{margin-bottom:6px}
- header h1{font-size:1.55rem}
- .sub{font-size:.75rem}
- .hud{grid-template-columns:repeat(6,minmax(0,1fr));gap:5px;margin-bottom:6px}
- .stat{padding:5px 7px}
- .stat small{font-size:.58rem}
- .main{grid-template-columns:minmax(0,1fr) 190px;gap:7px}
- .side{grid-template-columns:1fr;gap:6px}
- .gamebox{max-height:calc(100dvh - 145px)}
- canvas{max-height:calc(100dvh - 155px);width:100%;object-fit:contain}
- .mobile{position:fixed;right:8px;bottom:8px;width:180px;z-index:6;margin:0;gap:4px}
- .mobile button{min-height:38px;padding:4px;font-size:.9rem}
- .help{display:none}
- .mission,.tools,.shop,.log{padding:7px}
- .tools button,.shop button,.actions button{min-height:34px;padding:6px;font-size:.75rem}
- .overlay{position:fixed}
- .panel{max-width:400px;padding:10px 14px}
- .panel p{margin:6px 0;font-size:.8rem}
+
+body {
+  margin: 0;
+  padding: clamp(8px, 2vw, 16px);
+  background: linear-gradient(135deg, #c8f6e7, #dbe8ff);
+  font-family: system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+  color: var(--ink);
+  overscroll-behavior-y: contain;
 }
-@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+
+button {
+  font: inherit;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.app {
+  width: min(100%, 1120px);
+  margin: 0 auto;
+}
+
+header {
+  text-align: center;
+  margin: 0 0 12px;
+}
+
+h1 {
+  font-size: clamp(1.7rem, 5vw, 3.4rem);
+  line-height: 1.1;
+  margin: 0;
+  letter-spacing: clamp(-2px, -.15vw, -.5px);
+}
+
+h1 span {
+  color: #13896d;
+}
+
+.sub {
+  margin: 5px 0 0;
+  font-weight: 650;
+  line-height: 1.4;
+  font-size: clamp(.85rem, 2vw, 1rem);
+}
+
+.hud {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.stat, .tools, .mission, .shop, .log {
+  min-width: 0;
+  background: var(--panel);
+  border: 2px solid #fff;
+  border-radius: 14px;
+  padding: 10px 12px;
+  box-shadow: 0 5px 16px #36516b12;
+}
+
+.stat small {
+  display: block;
+  font-size: .7rem;
+  opacity: .68;
+  font-weight: 800;
+}
+
+.stat b {
+  font-size: clamp(.88rem, 1.8vw, 1.05rem);
+  overflow-wrap: anywhere;
+}
+
+.main {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 250px;
+  gap: 10px;
+  align-items: start;
+}
+
+.gamebox {
+  position: relative;
+  min-width: 0;
+  overflow: hidden;
+  border: clamp(2px, .6vw, 5px) solid white;
+  border-radius: 18px;
+  box-shadow: 0 12px 30px #30465b24;
+  background: #f3e6cf;
+}
+
+canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 8 / 5;
+  touch-action: none;
+  cursor: crosshair;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.side {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+}
+
+.side h3 {
+  margin: 0 0 7px;
+  font-size: 1rem;
+}
+
+.mission p {
+  margin: 4px 0;
+  font-size: .9rem;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+.tools, .shop {
+  display: grid;
+  gap: 7px;
+}
+
+.tools button, .actions button, .panel button,
+.mobile button, .shop button {
+  font-weight: 800;
+  border: 0;
+  border-radius: 10px;
+  padding: 10px;
+  min-height: 42px;
+  cursor: pointer;
+  background: #e9f5ff;
+  color: #203047;
+  box-shadow: 0 3px 0 #bfd5e7;
+}
+
+.tools button {
+  font-size: .86rem;
+  text-align: left;
+  line-height: 1.25;
+}
+
+.tools button.active {
+  background: #c8ffdf;
+  box-shadow: 0 3px 0 #7dcaa0;
+  outline: 2px solid #21a783;
+}
+
+.tools button:disabled, .shop button:disabled {
+  opacity: .45;
+  cursor: not-allowed;
+}
+
+.actions {
+  display: grid;
+  gap: 7px;
+}
+
+.actions button.primary {
+  background: var(--gold);
+  box-shadow: 0 3px 0 #dba333;
+}
+
+.actions button.green, .shop button {
+  background: #baf4d9;
+  box-shadow: 0 3px 0 #75caa4;
+}
+
+.help {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.help span {
+  background: #ffffffb8;
+  border-radius: 10px;
+  padding: 8px 11px;
+  font-size: .86rem;
+  font-weight: 650;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #14263dcc;
+  padding: clamp(8px, 3vw, 18px);
+  z-index: 5;
+  overflow: auto;
+}
+
+.panel {
+  width: min(100%, 480px);
+  max-height: 100%;
+  overflow-y: auto;
+  background: #fff9eb;
+  border-radius: 20px;
+  padding: clamp(14px, 3vw, 22px);
+  text-align: center;
+  box-shadow: 0 12px 30px #0003;
+}
+
+.panel h2 {
+  margin: 0 0 8px;
+  font-size: clamp(1.2rem, 4vw, 1.65rem);
+}
+
+.panel p {
+  line-height: 1.5;
+  font-size: clamp(.84rem, 2.5vw, .98rem);
+}
+
+.panel button {
+  background: #baf4d9;
+  box-shadow: 0 3px 0 #75caa4;
+  width: 100%;
+  min-height: 46px;
+}
+
+.mobile {
+  display: none;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 10px;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.mobile button {
+  background: #fff;
+  min-height: 54px;
+  font-size: 1.15rem;
+  box-shadow: 0 3px 0 #bfd5e7;
+}
+
+.mobile button.clean {
+  background: #baf4d9;
+}
+
+.mobile button.attack {
+  background: #ffd1c8;
+}
+
+.mobile button[data-key] {
+  font-size: 1.4rem;
+  touch-action: none;
+}
+
+.toast {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: calc(100% - 20px);
+  background: #203047;
+  color: white;
+  padding: 9px 14px;
+  border-radius: 30px;
+  font-weight: 800;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .2s;
+  white-space: normal;
+  text-align: center;
+  z-index: 2;
+  font-size: clamp(.75rem, 2vw, .9rem);
+}
+
+.toast.show {
+  opacity: 1;
+}
+
+.bar {
+  height: 8px;
+  background: #d8e2eb;
+  border-radius: 8px;
+  overflow: hidden;
+  margin: 5px 0;
+}
+
+.bar i {
+  display: block;
+  height: 100%;
+  background: #21a783;
+  width: 100%;
+}
+
+.log {
+  font-size: .82rem;
+  min-height: 52px;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 900px) {
+  .main {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .side {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .actions, .shop, .log {
+    grid-column: 1 / -1;
+  }
+
+  .hud {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .mobile {
+    display: grid;
+  }
+
+  .help span {
+    flex: 1 1 220px;
+  }
+}
+
+@media (max-width: 560px) {
+  body {
+    padding: 8px;
+  }
+
+  header {
+    margin-bottom: 9px;
+  }
+
+  .sub {
+    max-width: 42rem;
+    margin: 5px auto 0;
+  }
+
+  .hud {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .stat {
+    padding: 8px;
+    border-radius: 11px;
+  }
+
+  .stat small {
+    font-size: .62rem;
+    letter-spacing: -.1px;
+  }
+
+  .stat b {
+    font-size: .92rem;
+  }
+
+  .main {
+    gap: 8px;
+  }
+
+  .gamebox {
+    border-radius: 13px;
+  }
+
+  .side {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .mission, .tools, .shop, .log {
+    padding: 10px;
+    border-radius: 12px;
+  }
+
+  .mission p {
+    font-size: .82rem;
+  }
+
+  .tools button, .shop button, .actions button {
+    font-size: .8rem;
+    padding: 9px 8px;
+    min-height: 44px;
+  }
+
+  .tools h3, .shop h3, .mission h3 {
+    font-size: .92rem;
+  }
+
+  .actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .actions #next {
+    grid-column: 1 / -1;
+  }
+
+  .mobile {
+    gap: 7px;
+    margin-top: 8px;
+  }
+
+  .mobile button {
+    min-height: 52px;
+    padding: 8px 4px;
+  }
+
+  .help {
+    gap: 6px;
+    margin-top: 8px;
+  }
+
+  .help span {
+    flex: 1 1 100%;
+    font-size: .8rem;
+    padding: 7px 9px;
+  }
+}
+
+@media (max-width: 360px) {
+  body {
+    padding: 5px;
+  }
+
+  h1 {
+    font-size: 1.55rem;
+  }
+
+  .hud {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .stat small {
+    font-size: .65rem;
+  }
+
+  .side {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .actions, .shop, .log {
+    grid-column: auto;
+  }
+
+  .actions {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .mobile button {
+    font-size: 1rem;
+    min-height: 48px;
+  }
+
+  .panel {
+    border-radius: 14px;
+  }
+}
+
+@media (max-height: 520px) and (orientation: landscape) {
+  body {
+    padding: 5px;
+  }
+
+  header {
+    margin-bottom: 6px;
+  }
+
+  header h1 {
+    font-size: 1.55rem;
+  }
+
+  .sub {
+    font-size: .75rem;
+  }
+
+  .hud {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 5px;
+    margin-bottom: 6px;
+  }
+
+  .stat {
+    padding: 5px 7px;
+  }
+
+  .stat small {
+    font-size: .58rem;
+  }
+
+  .main {
+    grid-template-columns: minmax(0, 1fr) 190px;
+    gap: 7px;
+  }
+
+  .side {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  .gamebox {
+    max-height: calc(100dvh - 145px);
+  }
+
+  canvas {
+    max-height: calc(100dvh - 155px);
+    width: 100%;
+    object-fit: contain;
+  }
+
+  .mobile {
+    position: fixed;
+    right: 8px;
+    bottom: 8px;
+    width: 180px;
+    z-index: 6;
+    margin: 0;
+    gap: 4px;
+  }
+
+  .mobile button {
+    min-height: 38px;
+    padding: 4px;
+    font-size: .9rem;
+  }
+
+  .help {
+    display: none;
+  }
+
+  .mission, .tools, .shop, .log {
+    padding: 7px;
+  }
+
+  .tools button, .shop button, .actions button {
+    min-height: 34px;
+    padding: 6px;
+    font-size: .75rem;
+  }
+
+  .overlay {
+    position: fixed;
+  }
+
+  .panel {
+    max-width: 400px;
+    padding: 10px 14px;
+  }
+
+  .panel p {
+    margin: 6px 0;
+    font-size: .8rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    scroll-behavior: auto !important;
+    transition: none !important;
+  }
+}
 </style>
 </head>
-<body><div class="app">
-<header><h1>🧽 Lava<span>carniça</span> <small style="font-size:.45em;color:#203047">3.0</small></h1><p class="sub">A Ascensão da Limpeza — limpe, lucre, evolua e derrote os cocos monstros!</p></header>
+
+<body>
+<div class="app">
+
+<header>
+  <h1>🧽 Lava<span>carniça</span>
+    <small style="font-size:.45em;color:#203047">3.0</small>
+  </h1>
+  <p class="sub">A Ascensão da Limpeza — limpe, lucre, evolua e derrote os cocos monstros!</p>
+</header>
+
 <div class="hud">
- <div class="stat"><small>💵 DINHEIRO</small><b id="money">R$ 150</b></div>
- <div class="stat"><small>⭐ REPUTAÇÃO</small><b id="rep">0</b></div>
- <div class="stat"><small>🏠 FASE</small><b id="level">1 / 4</b></div>
- <div class="stat"><small>💩 SUJEIRAS</small><b id="remaining">8</b></div>
- <div class="stat"><small>❤️ VIDA</small><b id="hp">100 / 100</b><div class="bar"><i id="hpbar"></i></div></div>
- <div class="stat"><small>⏱️ TEMPO</small><b id="time">90s</b></div>
+  <div class="stat"><small>💵 DINHEIRO</small><b id="money">R$ 150</b></div>
+  <div class="stat"><small>⭐ REPUTAÇÃO</small><b id="rep">0</b></div>
+  <div class="stat"><small>🏠 FASE</small><b id="level">1 / 4</b></div>
+  <div class="stat"><small>💩 SUJEIRAS</small><b id="remaining">8</b></div>
+  <div class="stat">
+    <small>❤️ VIDA</small>
+    <b id="hp">100 / 100</b>
+    <div class="bar"><i id="hpbar"></i></div>
+  </div>
+  <div class="stat"><small>⏱️ TEMPO</small><b id="time">90s</b></div>
 </div>
+
 <div class="main">
- <div class="gamebox"><canvas id="game" width="800" height="500" aria-label="Área do jogo Lavacarniça"></canvas><div class="toast" id="toast" role="status" aria-live="polite"></div>
- <div class="overlay" id="overlay"><div class="panel"><h2 id="panelTitle">🚐 A empresa está aberta!</h2><p id="panelText">Você começa com R$ 150. Limpe as sujeiras para receber contratos e invista em melhorias. Cuidado: cocos monstros vão perseguir você! Fuja até evoluir e comprar o Super Produto.</p><p><b>Controles:</b> WASD/setas para andar; ESPAÇO para limpar ou atacar com o Super Produto. No celular, use os botões abaixo.</p><button id="start">Começar o serviço!</button></div></div></div>
- <aside class="side">
-  <div class="mission"><h3>📋 Ordem de serviço</h3><p id="client">Cliente: Dona Zilda</p><p id="house">Casa simples</p><p id="goal">Limpe todas as sujeiras!</p><p id="pay">Pagamento: R$ 100</p><p id="enemyInfo">👾 Inimigos: 1</p></div>
-  <div class="tools"><h3>🧴 Produtos equipados</h3>
-   <button data-product="0" class="active">1 · 🧴 Desinfetante (R$ 8)</button>
-   <button data-product="1">2 · 🧼 Sabão econômico (R$ 4)</button>
-   <button data-product="2">3 · 🧤 Luvas premium (R$ 12)</button>
-   <p id="toolHint" style="font-size:.8rem;margin:0">Desinfetante equilibrado.</p>
+  <div class="gamebox">
+    <canvas id="game" width="800" height="500" aria-label="Área do jogo Lavacarniça"></canvas>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <div class="overlay" id="overlay">
+      <div class="panel">
+        <h2 id="panelTitle">🚐 A empresa está aberta!</h2>
+        <p id="panelText">Você começa com R$ 150. Limpe as sujeiras para receber contratos e invista em melhorias. Cuidado: cocos monstros vão perseguir você!</p>
+        <p><b>Como jogar:</b> no celular, toque no chão da fase para caminhar até o ponto escolhido. Arraste o dedo para mudar o destino. Use <b>LIMPAR</b> perto da sujeira e <b>ATACAR</b> quando tiver o Super Produto. No computador, use WASD/setas e ESPAÇO.</p>
+        <button id="start">Começar o serviço!</button>
+      </div>
+    </div>
   </div>
-  <div class="shop"><h3>🛒 Loja de evolução</h3>
-   <button id="speedBuy">🏃 Velocidade + — R$ 100</button>
-   <button id="healthBuy">❤️ Vida máxima + — R$ 120</button>
-   <button id="superBuy">☣️ Super Produto — R$ 350</button>
-   <p id="shopHint" style="font-size:.8rem;margin:0">O Super Produto exige reputação 25 e velocidade nível 2.</p>
-  </div>
-  <div class="actions"><button id="upgrade" class="green">🛠️ Melhorar equipamento — R$ 100</button><button id="next" class="primary" style="display:none">Próxima casa ➜</button><button id="restart">↻ Reiniciar jogo</button></div>
-  <div class="log" id="log">📣 Dica: limpe perto dos cocos e fique longe dos monstros!</div>
- </aside>
+
+  <aside class="side">
+    <div class="mission">
+      <h3>📋 Ordem de serviço</h3>
+      <p id="client">Cliente: Dona Zilda</p>
+      <p id="house">Casa simples</p>
+      <p id="goal">Limpe todas as sujeiras!</p>
+      <p id="pay">Pagamento: R$ 100</p>
+      <p id="enemyInfo">👾 Inimigos: 1</p>
+    </div>
+
+    <div class="tools">
+      <h3>🧴 Produtos equipados</h3>
+      <button data-product="0" class="active">1 · 🧴 Desinfetante (R$ 8)</button>
+      <button data-product="1">2 · 🧼 Sabão econômico (R$ 4)</button>
+      <button data-product="2">3 · 🧤 Luvas premium (R$ 12)</button>
+      <p id="toolHint" style="font-size:.8rem;margin:0">Desinfetante equilibrado.</p>
+    </div>
+
+    <div class="shop">
+      <h3>🛒 Loja de evolução</h3>
+      <button id="speedBuy">🏃 Velocidade + — R$ 100</button>
+      <button id="healthBuy">❤️ Vida máxima + — R$ 120</button>
+      <button id="superBuy">☣️ Super Produto — R$ 350</button>
+      <p id="shopHint" style="font-size:.8rem;margin:0">O Super Produto exige reputação 25 e velocidade nível 2.</p>
+    </div>
+
+    <div class="actions">
+      <button id="upgrade" class="green">🛠️ Melhorar equipamento — R$ 100</button>
+      <button id="next" class="primary" style="display:none">Próxima casa ➜</button>
+      <button id="restart">↻ Reiniciar jogo</button>
+    </div>
+
+    <div class="log" id="log">📣 Dica: limpe perto dos cocos e fique longe dos monstros!</div>
+  </aside>
 </div>
+
 <div class="mobile" aria-label="Controles de toque">
- <span></span><button type="button" data-key="ArrowUp" aria-label="Mover para cima">⬆️</button><button type="button" data-action="clean" class="clean">🧽 LIMPAR</button>
- <button type="button" data-key="ArrowLeft" aria-label="Mover para esquerda">⬅️</button><button type="button" data-key="ArrowDown" aria-label="Mover para baixo">⬇️</button><button type="button" data-key="ArrowRight" aria-label="Mover para direita">➡️</button>
- <span></span><button type="button" data-action="attack" class="attack">☣️ ATACAR</button><span></span>
+  <span></span>
+  <button type="button" data-key="ArrowUp" aria-label="Mover para cima">⬆️</button>
+  <button type="button" data-action="clean" class="clean">🧽 LIMPAR</button>
+  <button type="button" data-key="ArrowLeft" aria-label="Mover para esquerda">⬅️</button>
+  <button type="button" data-key="ArrowDown" aria-label="Mover para baixo">⬇️</button>
+  <button type="button" data-key="ArrowRight" aria-label="Mover para direita">➡️</button>
+  <span></span>
+  <button type="button" data-action="attack" class="attack">☣️ ATACAR</button>
+  <span></span>
 </div>
-<div class="help"><span>🧽 Aproxime-se e aperte ESPAÇO para limpar</span><span>👾 Fuja dos cocos monstros até poder enfrentá-los</span><span>☣️ Super Produto: compre após reputação 25 e velocidade nível 2</span><span>💰 Termine contratos para ganhar dinheiro</span></div>
+
+<div class="help">
+  <span>📱 Celular: toque no cenário para mover; arraste o dedo para mudar o destino</span>
+  <span>🧽 Aproxime-se e toque em LIMPAR para limpar</span>
+  <span>👾 Fuja dos cocos monstros até poder enfrentá-los</span>
+  <span>☣️ Super Produto: compre após reputação 25 e velocidade nível 2</span>
+  <span>💰 Termine contratos para ganhar dinheiro</span>
 </div>
+
+</div>
+
 <script>
-(()=> {
-const c=document.getElementById('game'),x=c.getContext('2d'),$=id=>document.getElementById(id);
-const levels=[
- {client:'Dona Zilda',house:'Casa simples',pay:100,time:90,count:8,enemies:1,wall:'#b9d8c7'},
- {client:'Seu Cláudio',house:'Casa com quintal',pay:170,time:95,count:10,enemies:2,wall:'#b8d7ef'},
- {client:'Família Oliveira',house:'Sobrado familiar',pay:260,time:105,count:12,enemies:3,wall:'#e9c4d7'},
- {client:'Restaurante Bom Prato',house:'Cozinha comercial',pay:400,time:120,count:15,enemies:4,wall:'#f0d48c'}
-];
-const products=[
- {name:'Desinfetante',emoji:'🧴',cost:8,bonus:0,color:'#65b7f3',hint:'Desinfetante equilibrado: custo e eficiência balanceados.'},
- {name:'Sabão econômico',emoji:'🧼',cost:4,bonus:-1,color:'#ffadd2',hint:'Sabão econômico: barato, mas rende menos reputação.'},
- {name:'Luvas premium',emoji:'🧤',cost:12,bonus:3,color:'#9bdd76',hint:'Luvas premium: mais reputação por limpeza.'}
-];
-let level=0,money=150,rep=0,upgrade=0,selected=0,time=90,playing=false,won=false,last=0,tick=0,flash=0;
-let speedLevel=0,healthLevel=0,superProduct=false,attackCooldown=0,cleanCooldown=0;
-let player={x:400,y:260,r:16,speed:3.1,hp:100,maxHp:100,invuln:0},stains=[],enemies=[],keys={};
-const positions=[[110,110],[250,100],[530,100],[690,155],[155,340],[340,390],[545,330],[700,400],[430,170],[250,260],[620,250],[90,250],[460,420],[330,150],[720,300]];
-let lastHud=0;
-function say(t){$('toast').textContent=t;$('toast').classList.add('show');$('log').textContent='📣 '+t;clearTimeout(say.t);say.t=setTimeout(()=>$('toast').classList.remove('show'),1500)}
-function hud(force=false){
- const now=performance.now();if(!force&&now-lastHud<120)return;lastHud=now;
- $('money').textContent='R$ '+money;$('rep').textContent=rep;$('level').textContent=(level+1)+' / '+levels.length;
- $('remaining').textContent=stains.filter(s=>s.alive).length;$('time').textContent=Math.max(0,Math.ceil(time))+'s';
- $('hp').textContent=Math.ceil(player.hp)+' / '+player.maxHp;$('hpbar').style.width=(player.hp/player.maxHp*100)+'%';
- $('client').textContent='Cliente: '+levels[level].client;$('house').textContent=levels[level].house;
- $('goal').textContent='Limpe todas as sujeiras!';$('pay').textContent='Pagamento: R$ '+(levels[level].pay+upgrade*25);
- $('enemyInfo').textContent='👾 Inimigos: '+enemies.filter(e=>e.hp>0).length;
- $('upgrade').textContent=upgrade>=3?'✅ Equipamento no máximo':'🛠️ Melhorar equipamento — R$ '+(100+upgrade*100);
- $('upgrade').disabled=upgrade>=3||money<100+upgrade*100;
- $('speedBuy').textContent='🏃 Velocidade nível '+speedLevel+' → '+(speedLevel+1)+' — R$ '+(100+speedLevel*100);
- $('speedBuy').disabled=speedLevel>=3||money<100+speedLevel*100;
- $('healthBuy').textContent='❤️ Vida máxima + — R$ '+(120+healthLevel*100);
- $('healthBuy').disabled=healthLevel>=3||money<120+healthLevel*100;
- $('superBuy').textContent=superProduct?'✅ Super Produto comprado':'☣️ Super Produto — R$ 350';
- $('superBuy').disabled=superProduct||money<350||rep<25||speedLevel<2;
- $('shopHint').textContent=superProduct?'Super Produto equipado! Espaço/ATACAR derrota monstros próximos.':`Requisitos do Super Produto: reputação 25, velocidade nível 2 e R$ 350. Reputação atual: ${rep}.`;
- document.querySelectorAll('[data-product]').forEach(b=>{b.classList.toggle('active',+b.dataset.product===selected);b.disabled=money<products[+b.dataset.product].cost;});
- $('toolHint').textContent=products[selected].hint;
-}
-function resetLevel(){
- const l=levels[level];stains=[];enemies=[];
- for(let i=0;i<l.count;i++){let p=positions[i%positions.length];stains.push({x:p[0],y:p[1],alive:true,phase:i*1.2});}
- for(let i=0;i<l.enemies;i++){let p=positions[(i*3+2)%positions.length];enemies.push({x:p[0],y:p[1],r:19,hp:1+Math.floor(level/2),maxHp:1+Math.floor(level/2),speed:0.65+level*.19,phase:i*2,attack:0});}
- player={x:400,y:260,r:16,speed:3.1+speedLevel*.45+upgrade*.2,hp:Math.min(player.maxHp,player.hp),maxHp:player.maxHp,invuln:0};
- time=l.time;won=false;selected=0;hud(true);draw();
-}
-function restart(){level=0;money=150;rep=0;upgrade=0;speedLevel=0;healthLevel=0;superProduct=false;player={x:400,y:260,r:16,speed:3.1,hp:100,maxHp:100,invuln:0};resetLevel();$('next').style.display='none';}
-function rr(a,b,w,h,r,col){x.fillStyle=col;x.beginPath();x.roundRect(a,b,w,h,r);x.fill()}
-function room(){let l=levels[level];x.fillStyle='#f2e5ce';x.fillRect(0,0,800,500);for(let y=0;y<500;y+=50)for(let xx=0;xx<800;xx+=50){x.fillStyle=((xx+y)/50%2===0)?'#f5e9d5':'#ead9bd';x.fillRect(xx,y,50,50);x.strokeStyle='#ddccb0';x.strokeRect(xx,y,50,50)}
-rr(15,15,770,32,8,l.wall);x.fillStyle='#365a51';x.font='bold 14px system-ui';x.fillText('LAVACARNIÇA • '+l.house.toUpperCase(),28,36);
-rr(40,70,110,72,10,'#9bc9e9');rr(49,78,92,56,6,'#d5efff');x.fillStyle='#5ca9e8';x.fillRect(93,78,4,56);x.fillRect(49,104,92,4);
-rr(620,58,135,80,12,'#bd9a76');rr(632,68,111,60,8,'#dfc19a');rr(55,395,100,55,9,'#7ed7bd');
-x.fillStyle='#b67b51';x.fillRect(735,300,30,35);x.fillStyle='#55a96e';x.beginPath();x.arc(750,290,23,0,7);x.fill();rr(645,205,110,56,10,'#d4f1ff');x.fillStyle='#356b87';x.font='bold 12px system-ui';x.fillText('KIT LIMPEZA',658,226);x.font='23px serif';x.fillText('🧴 🧼',672,249)}
-function stain(s){x.save();x.translate(s.x,s.y+Math.sin(tick*.004+s.phase)*2);x.fillStyle='#6b432c';x.beginPath();x.ellipse(0,3,15,10,0,0,7);x.fill();x.fillStyle='#94603a';x.beginPath();x.arc(-7,-2,7,0,7);x.arc(2,-5,8,0,7);x.arc(9,0,6,0,7);x.fill();x.fillStyle='white';x.beginPath();x.arc(-4,0,2.4,0,7);x.arc(5,0,2.4,0,7);x.fill();x.fillStyle='#222';x.beginPath();x.arc(-3,1,1,0,7);x.arc(6,1,1,0,7);x.fill();x.restore()}
-function enemyDraw(e){if(e.hp<=0)return;x.save();x.translate(e.x,e.y+Math.sin(tick*.006+e.phase)*3);x.fillStyle='#0003';x.beginPath();x.ellipse(0,18,20,7,0,0,7);x.fill();x.fillStyle=level<2?'#7d3d25':'#4f203e';x.beginPath();x.ellipse(0,0,20,17,0,0,7);x.fill();x.fillStyle='#b66b35';x.beginPath();x.arc(-8,-8,9,0,7);x.arc(3,-11,10,0,7);x.arc(11,-4,7,0,7);x.fill();x.fillStyle='#ff3737';x.beginPath();x.arc(-7,-2,4,0,7);x.arc(7,-2,4,0,7);x.fill();x.fillStyle='white';x.fillRect(-8,5,16,4);x.fillStyle='#f4f4f4';x.fillRect(-6,5,3,5);x.fillRect(2,5,3,5);x.fillStyle='#222';x.fillRect(-13,-22,26,4);x.fillStyle='#ff5656';x.fillRect(-13,-22,26*(e.hp/e.maxHp),4);x.restore()}
-function avatar(){x.save();x.translate(player.x,player.y);if(player.invuln>0&&Math.floor(tick/80)%2===0)x.globalAlpha=.45;x.fillStyle='#0002';x.beginPath();x.ellipse(0,16,17,7,0,0,7);x.fill();x.strokeStyle='#304e68';x.lineWidth=6;x.lineCap='round';x.beginPath();x.moveTo(-6,10);x.lineTo(-8,20);x.moveTo(6,10);x.lineTo(8,20);x.stroke();rr(-14,-9,28,25,7,'#269b82');x.fillStyle='#f0bd91';x.beginPath();x.arc(0,-17,13,0,7);x.fill();x.fillStyle='#4a332b';x.beginPath();x.arc(0,-21,13,Math.PI,Math.PI*2);x.fill();x.fillStyle='#263344';x.beginPath();x.arc(-4,-17,1.5,0,7);x.arc(4,-17,1.5,0,7);x.fill();x.fillStyle='#d9f7ef';x.fillRect(-7,-13,14,5);rr(12,-4,10,16,3,superProduct?'#d9ff3f':products[selected].color);x.fillStyle='white';x.fillRect(14,-8,5,5);x.restore()}
-function draw(){room();stains.forEach(s=>s.alive&&stain(s));enemies.forEach(enemyDraw);avatar();let near=stains.find(s=>s.alive&&Math.hypot(s.x-player.x,s.y-player.y)<51);if(near&&playing){x.fillStyle='#203047';x.font='bold 13px system-ui';x.textAlign='center';x.fillText('ESPAÇO = LIMPAR',player.x,player.y-37);x.textAlign='left'}if(superProduct&&playing){x.strokeStyle='#d0ff39';x.lineWidth=2;x.beginPath();x.arc(player.x,player.y,48,0,Math.PI*2);x.stroke()}if(flash>0){x.fillStyle='rgba(255,255,255,.3)';x.fillRect(0,0,800,500);flash--}}
-function move(dt){let dx=0,dy=0;if(keys.ArrowLeft||keys.a||keys.A)dx--;if(keys.ArrowRight||keys.d||keys.D)dx++;if(keys.ArrowUp||keys.w||keys.W)dy--;if(keys.ArrowDown||keys.s||keys.S)dy++;if(dx&&dy){dx*=.707;dy*=.707}player.x=Math.max(28,Math.min(772,player.x+dx*player.speed*dt));player.y=Math.max(60,Math.min(472,player.y+dy*player.speed*dt))}
-function clean(){if(!playing||cleanCooldown>0)return;cleanCooldown=10;let s=stains.find(s=>s.alive&&Math.hypot(s.x-player.x,s.y-player.y)<53);if(!s){say('Chegue mais perto da sujeira!');return}let p=products[selected];if(money<p.cost){say('Dinheiro insuficiente! Escolha um produto mais barato.');return}money-=p.cost;s.alive=false;rep+=Math.max(1,2+p.bonus);flash=8;hud(true);say('Sujeira removida! −R$ '+p.cost);if(stains.every(s=>!s.alive))finish(true)}
-function attack(){if(!playing||attackCooldown>0)return;if(!superProduct){say('Você ainda não tem o Super Produto! Fuja dos monstros e evolua.');return}attackCooldown=24;let e=enemies.find(e=>e.hp>0&&Math.hypot(e.x-player.x,e.y-player.y)<75);if(!e){say('Chegue a menos de 75 pixels do monstro!');return}e.hp--;flash=10;if(e.hp<=0){money+=35+level*10;rep+=5;say('Monstro derrotado! Bônus de R$ '+(35+level*10));}else say('Monstro atingido! Acerte de novo!');hud(true)}
-function finish(success){playing=false;won=success;$('overlay').style.display='flex';$('next').style.display=success&&level<levels.length-1?'block':'none';if(success){let earned=levels[level].pay+upgrade*25;money+=earned;rep+=10+level*5;player.hp=Math.min(player.maxHp,player.hp+20);hud(true);$('panelTitle').textContent=level===levels.length-1?'🏆 Lenda da Lavacarniça!':'💵 Serviço concluído!';$('panelText').textContent=`Contrato concluído! Você recebeu R$ ${earned}, ganhou reputação e recuperou 20 pontos de vida. Saldo: R$ ${money}. ${level===levels.length-1?'Você dominou a cidade!':'Invista na loja para ficar mais rápido e desbloquear o Super Produto.'}`;$('start').textContent=level===levels.length-1?'Jogar de novo':'Continuar';}else{$('panelTitle').textContent=player.hp<=0?'👾 Os cocos monstros venceram!':'⏰ O tempo acabou!';$('panelText').textContent=`Ainda restam ${stains.filter(s=>s.alive).length} sujeiras. Você pode tentar de novo. Use as melhorias da loja e evite encostar nos monstros.`;$('start').textContent='Tentar novamente';}}
-function loop(now){let dt=Math.min(2,(now-last)/16.67||1);last=now;tick=now;if(playing){move(dt);time-=dt/60;attackCooldown=Math.max(0,attackCooldown-dt);cleanCooldown=Math.max(0,cleanCooldown-dt);player.invuln=Math.max(0,player.invuln-dt);
- enemies.forEach(e=>{if(e.hp<=0)return;let dx=player.x-e.x,dy=player.y-e.y,d=Math.hypot(dx,dy)||1;e.x+=dx/d*e.speed*dt;e.y+=dy/d*e.speed*dt;if(d<player.r+e.r&&player.invuln<=0){player.hp-=12;player.invuln=48;say('O monstro te acertou! −12 de vida');if(player.hp<=0){player.hp=0;hud(true);finish(false)}}});
- if(time<=0&&playing){time=0;hud(true);finish(false)}else hud()}draw();requestAnimationFrame(loop)}
-document.addEventListener('keydown',e=>{if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '].includes(e.key))e.preventDefault();keys[e.key]=true;if(e.code==='Space'||e.key===' '){if(superProduct)attack();else clean()}if('123'.includes(e.key)){selected=+e.key-1;hud(true)}});
-document.addEventListener('keyup',e=>keys[e.key]=false);
-window.addEventListener('blur',()=>{keys={}});
-document.addEventListener('visibilitychange',()=>{if(document.hidden)keys={}});
-document.querySelectorAll('[data-product]').forEach(b=>b.addEventListener('click',()=>{selected=+b.dataset.product;hud(true)}));
-document.querySelectorAll('[data-key]').forEach(b=>{
- const k=b.dataset.key;
- const down=e=>{e.preventDefault();keys[k]=true;try{b.setPointerCapture(e.pointerId)}catch(_){}};
- const up=e=>{e.preventDefault();keys[k]=false};
- b.addEventListener('pointerdown',down);b.addEventListener('pointerup',up);b.addEventListener('pointercancel',up);b.addEventListener('lostpointercapture',up);b.addEventListener('contextmenu',e=>e.preventDefault());
-});
-document.querySelector('[data-action="clean"]').addEventListener('click',clean);document.querySelector('[data-action="attack"]').addEventListener('click',attack);
-$('start').addEventListener('click',()=>{if(won){if(level===levels.length-1){restart()}else{level++;resetLevel()}}else if(time<=0||player.hp<=0||stains.every(s=>!s.alive)){resetLevel()}playing=true;$('overlay').style.display='none';$('next').style.display='none';hud(true)});
-$('next').addEventListener('click',()=>{level++;resetLevel();playing=true;$('overlay').style.display='none';$('next').style.display='none'});
-$('upgrade').addEventListener('click',()=>{let cost=100+upgrade*100;if(upgrade<3&&money>=cost){money-=cost;upgrade++;player.speed=3.1+speedLevel*.45+upgrade*.2;hud(true);say('Equipamento melhorado!')}else say('Junte mais dinheiro para melhorar!')});
-$('speedBuy').addEventListener('click',()=>{let cost=100+speedLevel*100;if(speedLevel<3&&money>=cost){money-=cost;speedLevel++;player.speed=3.1+speedLevel*.45+upgrade*.2;hud(true);say('Velocidade aumentada!')}});
-$('healthBuy').addEventListener('click',()=>{let cost=120+healthLevel*100;if(healthLevel<3&&money>=cost){money-=cost;healthLevel++;player.maxHp+=20;player.hp=player.maxHp;hud(true);say('Vida máxima aumentada!')}});
-$('superBuy').addEventListener('click',()=>{if(!superProduct&&money>=350&&rep>=25&&speedLevel>=2){money-=350;superProduct=true;hud(true);say('SUPER PRODUTO desbloqueado! Agora derrote os monstros!')}else say('Requisitos: R$ 350, reputação 25 e velocidade nível 2.')});
-$('restart').addEventListener('click',()=>{restart();playing=false;$('overlay').style.display='flex';$('panelTitle').textContent='🚐 Vamos recomeçar!';$('panelText').textContent='Você começa com R$ 150. Limpe, ganhe contratos, evolua e fuja dos cocos monstros!';$('start').textContent='Começar o serviço!'});
-restart();requestAnimationFrame(loop);
+(() => {
+  const c = document.getElementById('game');
+  const x = c.getContext('2d');
+  const $ = id => document.getElementById(id);
+
+  const levels = [
+    {client:'Dona Zilda', house:'Casa simples', pay:100, time:90, count:8, enemies:1, wall:'#b9d8c7'},
+    {client:'Seu Cláudio', house:'Casa com quintal', pay:170, time:95, count:10, enemies:2, wall:'#b8d7ef'},
+    {client:'Família Oliveira', house:'Sobrado familiar', pay:260, time:105, count:12, enemies:3, wall:'#e9c4d7'},
+    {client:'Restaurante Bom Prato', house:'Cozinha comercial', pay:400, time:120, count:15, enemies:4, wall:'#f0d48c'}
+  ];
+
+  const products = [
+    {name:'Desinfetante', emoji:'🧴', cost:8, bonus:0, color:'#65b7f3', hint:'Desinfetante equilibrado: custo e eficiência balanceados.'},
+    {name:'Sabão econômico', emoji:'🧼', cost:4, bonus:-1, color:'#ffadd2', hint:'Sabão econômico: barato, mas rende menos reputação.'},
+    {name:'Luvas premium', emoji:'🧤', cost:12, bonus:3, color:'#9bdd76', hint:'Luvas premium: mais reputação por limpeza.'}
+  ];
+
+  let level=0, money=150, rep=0, upgrade=0, selected=0;
+  let time=90, playing=false, won=false, last=0, tick=0, flash=0;
+  let speedLevel=0, healthLevel=0, superProduct=false;
+  let attackCooldown=0, cleanCooldown=0;
+
+  let player = {
+    x:400, y:260, r:16, speed:3.1,
+    hp:100, maxHp:100, invuln:0
+  };
+
+  let stains=[], enemies=[], keys={};
+
+  // Destino definido pelo toque/clique na área do jogo.
+  let moveTarget=null;
+  let targetPointerId=null;
+
+  const positions = [
+    [110,110],[250,100],[530,100],[690,155],[155,340],
+    [340,390],[545,330],[700,400],[430,170],[250,260],
+    [620,250],[90,250],[460,420],[330,150],[720,300]
+  ];
+
+  let lastHud=0;
+
+  function say(t) {
+    $('toast').textContent=t;
+    $('toast').classList.add('show');
+    $('log').textContent='📣 '+t;
+    clearTimeout(say.t);
+    say.t=setTimeout(()=>$('toast').classList.remove('show'),1500);
+  }
+
+  function hud(force=false) {
+    const now=performance.now();
+    if(!force && now-lastHud<120) return;
+    lastHud=now;
+
+    $('money').textContent='R$ '+money;
+    $('rep').textContent=rep;
+    $('level').textContent=(level+1)+' / '+levels.length;
+    $('remaining').textContent=stains.filter(s=>s.alive).length;
+    $('time').textContent=Math.max(0,Math.ceil(time))+'s';
+    $('hp').textContent=Math.ceil(player.hp)+' / '+player.maxHp;
+    $('hpbar').style.width=(player.hp/player.maxHp*100)+'%';
+
+    $('client').textContent='Cliente: '+levels[level].client;
+    $('house').textContent=levels[level].house;
+    $('goal').textContent='Limpe todas as sujeiras!';
+    $('pay').textContent='Pagamento: R$ '+(levels[level].pay+upgrade*25);
+    $('enemyInfo').textContent='👾 Inimigos: '+enemies.filter(e=>e.hp>0).length;
+
+    $('upgrade').textContent=upgrade>=3
+      ? '✅ Equipamento no máximo'
+      : '🛠️ Melhorar equipamento — R$ '+(100+upgrade*100);
+    $('upgrade').disabled=upgrade>=3||money<100+upgrade*100;
+
+    $('speedBuy').textContent='🏃 Velocidade nível '+speedLevel+
+      ' → '+(speedLevel+1)+' — R$ '+(100+speedLevel*100);
+    $('speedBuy').disabled=speedLevel>=3||money<100+speedLevel*100;
+
+    $('healthBuy').textContent='❤️ Vida máxima + — R$ '+(120+healthLevel*100);
+    $('healthBuy').disabled=healthLevel>=3||money<120+healthLevel*100;
+
+    $('superBuy').textContent=superProduct
+      ? '✅ Super Produto comprado'
+      : '☣️ Super Produto — R$ 350';
+    $('superBuy').disabled=superProduct||money<350||rep<25||speedLevel<2;
+
+    $('shopHint').textContent=superProduct
+      ? 'Super Produto equipado! Espaço/ATACAR derrota monstros próximos.'
+      : `Requisitos do Super Produto: reputação 25, velocidade nível 2 e R$ 350. Reputação atual: ${rep}.`;
+
+    document.querySelectorAll('[data-product]').forEach(b => {
+      b.classList.toggle('active',+b.dataset.product===selected);
+      b.disabled=money<products[+b.dataset.product].cost;
+    });
+
+    $('toolHint').textContent=products[selected].hint;
+  }
+
+  function resetLevel() {
+    const l=levels[level];
+    stains=[];
+    enemies=[];
+    moveTarget=null;
+    targetPointerId=null;
+    keys={};
+
+    for(let i=0;i<l.count;i++) {
+      const p=positions[i%positions.length];
+      stains.push({x:p[0],y:p[1],alive:true,phase:i*1.2});
+    }
+
+    for(let i=0;i<l.enemies;i++) {
+      const p=positions[(i*3+2)%positions.length];
+      enemies.push({
+        x:p[0],y:p[1],r:19,
+        hp:1+Math.floor(level/2),
+        maxHp:1+Math.floor(level/2),
+        speed:0.65+level*.19,
+        phase:i*2,attack:0
+      });
+    }
+
+    player={
+      x:400,y:260,r:16,
+      speed:3.1+speedLevel*.45+upgrade*.2,
+      hp:Math.min(player.maxHp,player.hp),
+      maxHp:player.maxHp,
+      invuln:0
+    };
+
+    time=l.time;
+    won=false;
+    selected=0;
+    hud(true);
+    draw();
+  }
+
+  function restart() {
+    level=0; money=150; rep=0; upgrade=0;
+    speedLevel=0; healthLevel=0; superProduct=false;
+    moveTarget=null; targetPointerId=null; keys={};
+
+    player={
+      x:400,y:260,r:16,speed:3.1,
+      hp:100,maxHp:100,invuln:0
+    };
+
+    resetLevel();
+    $('next').style.display='none';
+  }
+
+  function rr(a,b,w,h,r,col) {
+    x.fillStyle=col;
+    x.beginPath();
+    x.roundRect(a,b,w,h,r);
+    x.fill();
+  }
+
+  function room() {
+    const l=levels[level];
+    x.fillStyle='#f2e5ce';
+    x.fillRect(0,0,800,500);
+
+    for(let y=0;y<500;y+=50) {
+      for(let xx=0;xx<800;xx+=50) {
+        x.fillStyle=((xx+y)/50%2===0)?'#f5e9d5':'#ead9bd';
+        x.fillRect(xx,y,50,50);
+        x.strokeStyle='#ddccb0';
+        x.strokeRect(xx,y,50,50);
+      }
+    }
+
+    rr(15,15,770,32,8,l.wall);
+    x.fillStyle='#365a51';
+    x.font='bold 14px system-ui';
+    x.fillText('LAVACARNIÇA • '+l.house.toUpperCase(),28,36);
+
+    rr(40,70,110,72,10,'#9bc9e9');
+    rr(49,78,92,56,6,'#d5efff');
+    x.fillStyle='#5ca9e8';
+    x.fillRect(93,78,4,56);
+    x.fillRect(49,104,92,4);
+
+    rr(620,58,135,80,12,'#bd9a76');
+    rr(632,68,111,60,8,'#dfc19a');
+    rr(55,395,100,55,9,'#7ed7bd');
+
+    x.fillStyle='#b67b51';
+    x.fillRect(735,300,30,35);
+    x.fillStyle='#55a96e';
+    x.beginPath();
+    x.arc(750,290,23,0,7);
+    x.fill();
+
+    rr(645,205,110,56,10,'#d4f1ff');
+    x.fillStyle='#356b87';
+    x.font='bold 12px system-ui';
+    x.fillText('KIT LIMPEZA',658,226);
+    x.font='23px serif';
+    x.fillText('🧴 🧼',672,249);
+  }
+
+  function stain(s) {
+    x.save();
+    x.translate(s.x,s.y+Math.sin(tick*.004+s.phase)*2);
+    x.fillStyle='#6b432c';
+    x.beginPath();
+    x.ellipse(0,3,15,10,0,0,7);
+    x.fill();
+
+    x.fillStyle='#94603a';
+    x.beginPath();
+    x.arc(-7,-2,7,0,7);
+    x.arc(2,-5,8,0,7);
+    x.arc(9,0,6,0,7);
+    x.fill();
+
+    x.fillStyle='white';
+    x.beginPath();
+    x.arc(-4,0,2.4,0,7);
+    x.arc(5,0,2.4,0,7);
+    x.fill();
+
+    x.fillStyle='#222';
+    x.beginPath();
+    x.arc(-3,1,1,0,7);
+    x.arc(6,1,1,0,7);
+    x.fill();
+    x.restore();
+  }
+
+  function enemyDraw(e) {
+    if(e.hp<=0) return;
+    x.save();
+    x.translate(e.x,e.y+Math.sin(tick*.006+e.phase)*3);
+
+    x.fillStyle='#0003';
+    x.beginPath();
+    x.ellipse(0,18,20,7,0,0,7);
+    x.fill();
+
+    x.fillStyle=level<2?'#7d3d25':'#4f203e';
+    x.beginPath();
+    x.ellipse(0,0,20,17,0,0,7);
+    x.fill();
+
+    x.fillStyle='#b66b35';
+    x.beginPath();
+    x.arc(-8,-8,9,0,7);
+    x.arc(3,-11,10,0,7);
+    x.arc(11,-4,7,0,7);
+    x.fill();
+
+    x.fillStyle='#ff3737';
+    x.beginPath();
+    x.arc(-7,-2,4,0,7);
+    x.arc(7,-2,4,0,7);
+    x.fill();
+
+    x.fillStyle='white';
+    x.fillRect(-8,5,16,4);
+    x.fillStyle='#f4f4f4';
+    x.fillRect(-6,5,3,5);
+    x.fillRect(2,5,3,5);
+
+    x.fillStyle='#222';
+    x.fillRect(-13,-22,26,4);
+    x.fillStyle='#ff5656';
+    x.fillRect(-13,-22,26*(e.hp/e.maxHp),4);
+    x.restore();
+  }
+
+  function avatar() {
+    x.save();
+    x.translate(player.x,player.y);
+
+    if(player.invuln>0 && Math.floor(tick/80)%2===0) {
+      x.globalAlpha=.45;
+    }
+
+    x.fillStyle='#0002';
+    x.beginPath();
+    x.ellipse(0,16,17,7,0,0,7);
+    x.fill();
+
+    x.strokeStyle='#304e68';
+    x.lineWidth=6;
+    x.lineCap='round';
+    x.beginPath();
+    x.moveTo(-6,10);
+    x.lineTo(-8,20);
+    x.moveTo(6,10);
+    x.lineTo(8,20);
+    x.stroke();
+
+    rr(-14,-9,28,25,7,'#269b82');
+
+    x.fillStyle='#f0bd91';
+    x.beginPath();
+    x.arc(0,-17,13,0,7);
+    x.fill();
+
+    x.fillStyle='#4a332b';
+    x.beginPath();
+    x.arc(0,-21,13,Math.PI,Math.PI*2);
+    x.fill();
+
+    x.fillStyle='#263344';
+    x.beginPath();
+    x.arc(-4,-17,1.5,0,7);
+    x.arc(4,-17,1.5,0,7);
+    x.fill();
+
+    x.fillStyle='#d9f7ef';
+    x.fillRect(-7,-13,14,5);
+
+    rr(12,-4,10,16,3,superProduct?'#d9ff3f':products[selected].color);
+    x.fillStyle='white';
+    x.fillRect(14,-8,5,5);
+    x.restore();
+  }
+
+  function draw() {
+    room();
+    stains.forEach(s=>s.alive&&stain(s));
+    enemies.forEach(enemyDraw);
+
+    // Mostra um marcador no local escolhido pelo jogador.
+    if(moveTarget && playing) {
+      x.save();
+      x.strokeStyle='#13896d';
+      x.fillStyle='#ffffffd9';
+      x.lineWidth=3;
+
+      x.beginPath();
+      x.arc(moveTarget.x,moveTarget.y,12,0,Math.PI*2);
+      x.fill();
+      x.stroke();
+
+      x.beginPath();
+      x.moveTo(moveTarget.x-6,moveTarget.y);
+      x.lineTo(moveTarget.x+6,moveTarget.y);
+      x.moveTo(moveTarget.x,moveTarget.y-6);
+      x.lineTo(moveTarget.x,moveTarget.y+6);
+      x.stroke();
+      x.restore();
+    }
+
+    avatar();
+
+    const near=stains.find(
+      s=>s.alive&&Math.hypot(s.x-player.x,s.y-player.y)<51
+    );
+
+    if(near&&playing) {
+      x.fillStyle='#203047';
+      x.font='bold 13px system-ui';
+      x.textAlign='center';
+      x.fillText('TOQUE EM LIMPAR',player.x,player.y-37);
+      x.textAlign='left';
+    }
+
+    if(superProduct&&playing) {
+      x.strokeStyle='#d0ff39';
+      x.lineWidth=2;
+      x.beginPath();
+      x.arc(player.x,player.y,48,0,Math.PI*2);
+      x.stroke();
+    }
+
+    if(flash>0) {
+      x.fillStyle='rgba(255,255,255,.3)';
+      x.fillRect(0,0,800,500);
+      flash--;
+    }
+  }
+
+  function move(dt) {
+    let dx=0,dy=0;
+
+    if(keys.ArrowLeft||keys.a||keys.A) dx--;
+    if(keys.ArrowRight||keys.d||keys.D) dx++;
+    if(keys.ArrowUp||keys.w||keys.W) dy--;
+    if(keys.ArrowDown||keys.s||keys.S) dy++;
+
+    // O teclado ou as setas direcionais têm prioridade enquanto pressionados.
+    if(dx!==0||dy!==0) {
+      moveTarget=null;
+
+      if(dx&&dy) {
+        dx*=Math.SQRT1_2;
+        dy*=Math.SQRT1_2;
+      }
+
+      player.x=Math.max(28,Math.min(772,player.x+dx*player.speed*dt));
+      player.y=Math.max(60,Math.min(472,player.y+dy*player.speed*dt));
+      return;
+    }
+
+    // No celular: caminhar até o ponto selecionado com o dedo.
+    if(moveTarget) {
+      const tx=Math.max(28,Math.min(772,moveTarget.x));
+      const ty=Math.max(60,Math.min(472,moveTarget.y));
+      const vx=tx-player.x;
+      const vy=ty-player.y;
+      const distance=Math.hypot(vx,vy);
+      const step=player.speed*dt;
+
+      if(distance<=Math.max(step,3)) {
+        player.x=tx;
+        player.y=ty;
+        moveTarget=null;
+      } else {
+        player.x+=vx/distance*step;
+        player.y+=vy/distance*step;
+      }
+    }
+  }
+
+  function clean() {
+    if(!playing||cleanCooldown>0) return;
+    cleanCooldown=10;
+
+    const s=stains.find(
+      s=>s.alive&&Math.hypot(s.x-player.x,s.y-player.y)<53
+    );
+
+    if(!s) {
+      say('Chegue mais perto da sujeira!');
+      return;
+    }
+
+    const p=products[selected];
+
+    if(money<p.cost) {
+      say('Dinheiro insuficiente! Escolha um produto mais barato.');
+      return;
+    }
+
+    money-=p.cost;
+    s.alive=false;
+    rep+=Math.max(1,2+p.bonus);
+    flash=8;
+    hud(true);
+    say('Sujeira removida! −R$ '+p.cost);
+
+    if(stains.every(s=>!s.alive)) finish(true);
+  }
+
+  function attack() {
+    if(!playing||attackCooldown>0) return;
+
+    if(!superProduct) {
+      say('Você ainda não tem o Super Produto! Fuja dos monstros e evolua.');
+      return;
+    }
+
+    attackCooldown=24;
+
+    const e=enemies.find(
+      e=>e.hp>0&&Math.hypot(e.x-player.x,e.y-player.y)<75
+    );
+
+    if(!e) {
+      say('Chegue a menos de 75 pixels do monstro!');
+      return;
+    }
+
+    e.hp--;
+    flash=10;
+
+    if(e.hp<=0) {
+      money+=35+level*10;
+      rep+=5;
+      say('Monstro derrotado! Bônus de R$ '+(35+level*10));
+    } else {
+      say('Monstro atingido! Acerte de novo!');
+    }
+
+    hud(true);
+  }
+
+  function finish(success) {
+    playing=false;
+    won=success;
+    moveTarget=null;
+    targetPointerId=null;
+    keys={};
+
+    $('overlay').style.display='flex';
+    $('next').style.display=success&&level<levels.length-1?'block':'none';
+
+    if(success) {
+      const earned=levels[level].pay+upgrade*25;
+      money+=earned;
+      rep+=10+level*5;
+      player.hp=Math.min(player.maxHp,player.hp+20);
+      hud(true);
+
+      $('panelTitle').textContent=level===levels.length-1
+        ? '🏆 Lenda da Lavacarniça!'
+        : '💵 Serviço concluído!';
+
+      $('panelText').textContent=
+        `Contrato concluído! Você recebeu R$ ${earned}, ganhou reputação e recuperou 20 pontos de vida. Saldo: R$ ${money}. `+
+        (level===levels.length-1
+          ? 'Você dominou a cidade!'
+          : 'Invista na loja para ficar mais rápido e desbloquear o Super Produto.');
+
+      $('start').textContent=level===levels.length-1?'Jogar de novo':'Continuar';
+    } else {
+      $('panelTitle').textContent=player.hp<=0
+        ? '👾 Os cocos monstros venceram!'
+        : '⏰ O tempo acabou!';
+
+      $('panelText').textContent=
+        `Ainda restam ${stains.filter(s=>s.alive).length} sujeiras. Você pode tentar de novo. Use as melhorias da loja e evite encostar nos monstros.`;
+
+      $('start').textContent='Tentar novamente';
+    }
+  }
+
+  function loop(now) {
+    let dt=Math.min(2,(now-last)/16.67||1);
+    last=now;
+    tick=now;
+
+    if(playing) {
+      move(dt);
+      time-=dt/60;
+      attackCooldown=Math.max(0,attackCooldown-dt);
+      cleanCooldown=Math.max(0,cleanCooldown-dt);
+      player.invuln=Math.max(0,player.invuln-dt);
+
+      enemies.forEach(e=>{
+        if(e.hp<=0) return;
+
+        const dx=player.x-e.x;
+        const dy=player.y-e.y;
+        const d=Math.hypot(dx,dy)||1;
+
+        e.x+=dx/d*e.speed*dt;
+        e.y+=dy/d*e.speed*dt;
+
+        if(d<player.r+e.r&&player.invuln<=0) {
+          player.hp-=12;
+          player.invuln=48;
+          say('O monstro te acertou! −12 de vida');
+
+          if(player.hp<=0) {
+            player.hp=0;
+            hud(true);
+            finish(false);
+          }
+        }
+      });
+
+      if(time<=0&&playing) {
+        time=0;
+        hud(true);
+        finish(false);
+      } else {
+        hud();
+      }
+    }
+
+    draw();
+    requestAnimationFrame(loop);
+  }
+
+  // Teclado no computador.
+  document.addEventListener('keydown',e=>{
+    if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '].includes(e.key)) {
+      e.preventDefault();
+    }
+
+    keys[e.key]=true;
+
+    if(e.code==='Space'||e.key===' ') {
+      if(superProduct) attack();
+      else clean();
+    }
+
+    if('123'.includes(e.key)) {
+      selected=+e.key-1;
+      hud(true);
+    }
+  });
+
+  document.addEventListener('keyup',e=>{
+    keys[e.key]=false;
+  });
+
+  // Converte as coordenadas do toque para as coordenadas reais do canvas.
+  function canvasPosition(event) {
+    const rect=c.getBoundingClientRect();
+
+    return {
+      x:Math.max(
+        28,
+        Math.min(772,(event.clientX-rect.left)*(c.width/rect.width))
+      ),
+      y:Math.max(
+        60,
+        Math.min(472,(event.clientY-rect.top)*(c.height/rect.height))
+      )
+    };
+  }
+
+  // CONTROLE PELO CELULAR:
+  // toque no cenário para definir o destino do personagem.
+  // arraste o dedo para mudar o destino durante o movimento.
+  c.addEventListener('pointerdown',event=>{
+    if(!playing||$('overlay').style.display!=='none') return;
+    if(event.pointerType==='mouse'&&event.button!==0) return;
+
+    event.preventDefault();
+    targetPointerId=event.pointerId;
+    moveTarget=canvasPosition(event);
+
+    try {
+      c.setPointerCapture(event.pointerId);
+    } catch(_) {
+      // Alguns navegadores podem não exigir captura do ponteiro.
+    }
+  });
+
+  c.addEventListener('pointermove',event=>{
+    if(targetPointerId!==event.pointerId||!playing) return;
+
+    event.preventDefault();
+    moveTarget=canvasPosition(event);
+  });
+
+  function releaseCanvasPointer(event) {
+    if(targetPointerId!==event.pointerId) return;
+
+    if(playing) moveTarget=canvasPosition(event);
+    targetPointerId=null;
+  }
+
+  c.addEventListener('pointerup',releaseCanvasPointer);
+
+  c.addEventListener('pointercancel',event=>{
+    if(targetPointerId===event.pointerId) targetPointerId=null;
+  });
+
+  c.addEventListener('lostpointercapture',event=>{
+    if(targetPointerId===event.pointerId) targetPointerId=null;
+  });
+
+  c.addEventListener('contextmenu',event=>event.preventDefault());
+
+  window.addEventListener('blur',()=>{
+    keys={};
+    targetPointerId=null;
+  });
+
+  document.addEventListener('visibilitychange',()=>{
+    if(document.hidden) {
+      keys={};
+      targetPointerId=null;
+    }
+  });
+
+  // Seleção dos produtos.
+  document.querySelectorAll('[data-product]').forEach(b=>{
+    b.addEventListener('click',()=>{
+      selected=+b.dataset.product;
+      hud(true);
+    });
+  });
+
+  // Botões direcionais para telas sensíveis ao toque.
+  document.querySelectorAll('[data-key]').forEach(b=>{
+    const k=b.dataset.key;
+
+    const down=e=>{
+      e.preventDefault();
+      keys[k]=true;
+      moveTarget=null;
+
+      try {
+        b.setPointerCapture(e.pointerId);
+      } catch(_) {}
+    };
+
+    const up=e=>{
+      e.preventDefault();
+      keys[k]=false;
+    };
+
+    b.addEventListener('pointerdown',down);
+    b.addEventListener('pointerup',up);
+    b.addEventListener('pointercancel',up);
+    b.addEventListener('lostpointercapture',up);
+    b.addEventListener('contextmenu',e=>e.preventDefault());
+  });
+
+  // Ações de limpeza e ataque.
+  document.querySelector('[data-action="clean"]').addEventListener('click',clean);
+  document.querySelector('[data-action="attack"]').addEventListener('click',attack);
+
+  // Iniciar, continuar ou tentar novamente.
+  $('start').addEventListener('click',()=>{
+    if(won) {
+      if(level===levels.length-1) {
+        restart();
+      } else {
+        level++;
+        resetLevel();
+      }
+    } else if(time<=0||player.hp<=0||stains.every(s=>!s.alive)) {
+      resetLevel();
+    }
+
+    playing=true;
+    $('overlay').style.display='none';
+    $('next').style.display='none';
+    hud(true);
+  });
+
+  $('next').addEventListener('click',()=>{
+    level++;
+    resetLevel();
+    playing=true;
+    $('overlay').style.display='none';
+    $('next').style.display='none';
+  });
+
+  // Melhorias e loja.
+  $('upgrade').addEventListener('click',()=>{
+    const cost=100+upgrade*100;
+
+    if(upgrade<3&&money>=cost) {
+      money-=cost;
+      upgrade++;
+      player.speed=3.1+speedLevel*.45+upgrade*.2;
+      hud(true);
+      say('Equipamento melhorado!');
+    } else {
+      say('Junte mais dinheiro para melhorar!');
+    }
+  });
+
+  $('speedBuy').addEventListener('click',()=>{
+    const cost=100+speedLevel*100;
+
+    if(speedLevel<3&&money>=cost) {
+      money-=cost;
+      speedLevel++;
+      player.speed=3.1+speedLevel*.45+upgrade*.2;
+      hud(true);
+      say('Velocidade aumentada!');
+    }
+  });
+
+  $('healthBuy').addEventListener('click',()=>{
+    const cost=120+healthLevel*100;
+
+    if(healthLevel<3&&money>=cost) {
+      money-=cost;
+      healthLevel++;
+      player.maxHp+=20;
+      player.hp=player.maxHp;
+      hud(true);
+      say('Vida máxima aumentada!');
+    }
+  });
+
+  $('superBuy').addEventListener('click',()=>{
+    if(!superProduct&&money>=350&&rep>=25&&speedLevel>=2) {
+      money-=350;
+      superProduct=true;
+      hud(true);
+      say('SUPER PRODUTO desbloqueado! Agora derrote os monstros!');
+    } else {
+      say('Requisitos: R$ 350, reputação 25 e velocidade nível 2.');
+    }
+  });
+
+  $('restart').addEventListener('click',()=>{
+    restart();
+    playing=false;
+    $('overlay').style.display='flex';
+    $('panelTitle').textContent='🚐 Vamos recomeçar!';
+    $('panelText').textContent='Você começa com R$ 150. Limpe, ganhe contratos, evolua e fuja dos cocos monstros!';
+    $('start').textContent='Começar o serviço!';
+  });
+
+  restart();
+  requestAnimationFrame(loop);
 })();
-</script></body></html>
+</script>
+</body>
+</html>
